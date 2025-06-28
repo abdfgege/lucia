@@ -12,37 +12,83 @@ class Library:
         self.books = []
 
     def add_book(self, title, author):
-        new_book = Book(title, author)
-        self.books.append(new_book)
-        print("책이 추가되었습니다. ")
-    
-    def remove_book(self, title):
-        for book in self.books:
-            if book.title == title:
-                self.books.remov(book)
-                print("책이 삭제되었습니다. ")
-                return
+        self.books.append(Book(title, author))
         print("✅ 책이 추가되었습니다.")
 
+    def remove_book(self, title):
+        self.books = [b for b in self.books if b.title != title]
+        print("책이 삭제되었습니다. ")
+
     def search_book(self, title):
-        for book in self.books:
-            if book.title == title:
-                print("🔍 책을 찾았습니다:")
-                print(book)
-                return
+        for b in self.books:
+            if b.title == title:
+                print("🔍 책을 찾았습니다:", b)
+                return b
         print("❌ 해당 책이 없습니다.")
+        return None
 
     def list_books(self):
         if not self.books:
             print("📚 등록된 책이 없습니다.")
+        for b in self.books:
+            print(b)
+
+class User:
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+class AuthLibrary(Library):
+    def __init__(self):
+        super().__init__()
+        self.users = []
+
+    def find_user(self, username):
+        for user in self.users:
+            if user.username == username:
+                return user
+        return None
+    
+    def register_user(self, username, password):
+        if self.find_user(username):
+            return False
+        self.users.append(User(username, password))
+        return True
+
+    def login(self, username, password):
+        user = self.find_user(username)
+        if user and user.password == password:
+            return True
         else:
-            print("📚 도서 목록:")
-            for book in self.books:
-                print(book)
+            return False
+        
 
 
 def main():
-    lib = Library()
+    lib = AuthLibrary()
+    current_user = None
+
+    while not current_user:
+        print("\n1. 로그인  2. 회원가입  3. 종료")
+        cmd = input("선택: ")
+        if cmd == '1':
+            uid = input("아이디: ")
+            pw = input("비밀번호: ")
+            if lib.login(uid, pw):
+                current_user = uid
+                print("✅ 로그인 성공")
+            else:
+                print("❌ 실패")
+        elif cmd == '2':
+            uid = input("아이디 생성: ")
+            pw = input("비번 생성: ")
+            if lib.register_user(uid, pw):
+                print("✅ 회원가입 완료")
+            else:
+                print("❌ 이미 존재하는 아이디입니다.")
+        else:
+            return
+
 
     while True:
         print("\n📘 도서관 관리 프로그램")
