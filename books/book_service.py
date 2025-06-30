@@ -61,8 +61,6 @@ class AuthLibrary(Library):
             return True
         else:
             return False
-        
-
 
 def main():
     lib = AuthLibrary()
